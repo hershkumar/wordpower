@@ -1,0 +1,24 @@
+{
+  "name": "wordpower",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "mongodb": "^3.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hershkumar/wordpower.git"
+  },
+  "author": "Hersh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hershkumar/wordpower/issues"
+  },
+  "homepage": "https://github.com/hershkumar/wordpower#readme"
+}
