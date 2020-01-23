@@ -4,35 +4,39 @@ $(document).ready(function(){
         socket.emit('checkRankings');
     });
     socket.on('sendDB', function(msg){
-        $("body").after(msg);
+        $("tablehere").empty();
+        $("tablehere").append(msg);
     });
 
     $("#submitform").submit(function(e){
         e.preventDefault();
         var name1 = $("#name1").val();
         var name2 = $("#name2").val();
-        msg = [name1, name2];
+        var score1 = $("#score1").val();
+        var score2 = $("#score2").val();
+        var longword = $("#word").val();
+        msg = [name1, name2, score1, score2, longword];
 
         // check the message for dumb stuff
 
         // empty the two text boxes
-        $("name1").empty();
-        $("name2").empty();
+        $("#name1").empty();
+        $("#name2").empty();
+        $("#score1").empty();
+        $("#score2").empty();
+        $("#word").empty();
         // actually submit to the server that we have a new game
 
         socket.emit('submitNewGame', msg);
 
     });
 
-    // https://stackoverflow.com/questions/7717527/smooth-scrolling-when-clicking-an-anchor-link
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        console.log(anchor);
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
+    new fullpage("#fullpage", {
+        responsiveWidth: 700,
+        parallax: true
     });
+
+    $(".sforma").on('click', e => {
+        fullpage_api.moveTo(2);
+    })
 });

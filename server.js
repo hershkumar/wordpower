@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
-// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
+//sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
@@ -18,6 +18,10 @@ sqlite3.connect('db/rankings.db');
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',1000)");
 
+// make mock game database
+
+//sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INT, loser_score INT, longword TEXT)");
+//sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword) VALUES('Dhruv','Nate', 10000, 5000,'yeet')");
 console.log('...done.');
 
 
@@ -72,32 +76,9 @@ io.sockets.on('connection',function(socket){
 		if (msg[0] != "" && msg[1] != ""){
 			var name1 = msg[0];
 			var name2 = msg[1];
-
-			var e1 = getPlayerElo(name1);
-			var e2 = getPlayerElo(name2);
-			
-			var deltaElo = 0;
-			// do cost calculation here
-			deltaElo = parseInt(30 + (e2-e1)/30);
-			//update value for both players
-			var p1NewElo = e1 + deltaElo;
-			var p2NewElo = e2 - deltaElo;
-			if (p1NewElo <= 0){
-				p1NewElo = 0;
-			}
-			if (p2NewElo <= 0){
-				p2NewElo = 0;
-			}
-			sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
-				$newElo:p1NewElo,
-				$playerName: name1
-			});
-			sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
-				$newElo:p2NewElo,
-				$playerName: name2
-			});
+			updateElos(name1,name2);
 		}
-		io.emit('sendDB',getTable());
+		io.emit('sendDB', getTable());
 	});
 });
 
@@ -120,6 +101,31 @@ function getTable(){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
 	}
-	// return table(names, elos);
-	return {'names': names, 'elos': elos};
+  return {'names': names, 'elos': elos};
+}
+
+function updateElos(name1, name2){
+	var e1 = getPlayerElo(name1);
+	var e2 = getPlayerElo(name2);
+
+	var deltaElo = 0;
+	// do cost calculation here
+	deltaElo = parseInt(30 + (e2-e1)/30);
+	//update value for both players
+	var p1NewElo = e1 + deltaElo;
+	var p2NewElo = e2 - deltaElo;
+	if (p1NewElo <= 0){
+		p1NewElo = 0;
+	}
+	if (p2NewElo <= 0){
+		p2NewElo = 0;
+	}
+	sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
+		$newElo:p1NewElo,
+		$playerName: name1
+	});
+	sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
+		$newElo:p2NewElo,
+		$playerName: name2
+	});
 }
