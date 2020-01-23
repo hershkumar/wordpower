@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -12,7 +12,23 @@
   <meta name="description" content="Rankings for the Word Hunt League">
   <meta name="author" content="Hersh Kumar">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-  
+
+<style type="text/css">
+table{
+    counter-reset: rowNumber;
+}
+
+table tr > td:first-child{
+    counter-increment: rowNumber;
+}
+                
+table tr td:first-child::before{
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+
+</style>
 
 </head>
 <script type="text/javascript">
@@ -29,6 +45,6 @@
 	});
 </script>
 <body>
-	
+
 </body>
 </html>
