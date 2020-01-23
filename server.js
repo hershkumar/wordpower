@@ -1,22 +1,14 @@
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
-var sqlite3 = require('sqlite3').verbose();
+var sqlite3 = require('sqlite-sync');
+var io = require('socket.io')(http);
 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
-var db = new sqlite3.Database('./db/rankings.db');
+//var db = new sqlite3.Database('./db/rankings.db');
+sqlite3.connect('db/rankings.db');
 console.log('...done.');
-// mock adding things to the table
-//db.run('CREATE TABLE If NOT EXISTS players (name TEXT, elo INTEGER)');
-var stmt = db.prepare('INSERT INTO players (name, elo) VALUES(?,?)');
-//stmt.run('Hersh', 500);
-//stmt.run('Emmy', 500);
-//stmt.run('Nate', 500);
-//stmt.run('Shawn', 5000);
-
-
-
 
 
 app.all('*', function(req, res, next) {
@@ -38,11 +30,42 @@ http.listen(port,'0.0.0.0', function(){
 });
 
 let sql = `SELECT * from players ORDER BY elo DESC`;
-app.route('/rankings').get(function(req,res){
-	res.sendFile(__dirname + '/rankings.html');
-	// accessing the database
-	db.each(sql,[],(err,rows) => {
-		if (err) throw err;
-		console.log(rows.name, rows.elo)
-	});
+
+
+function table(names, elos) {
+	var openstr = "<table><tr><th>Name</th><th>Elo</th></tr>";
+	var closestr = "</table>";
+	var opentr = "<tr>";
+	var closetr = "</tr>";
+	var opendcell = "<td>";
+	var closedcell = "</td>";
+
+	for(i = 0; i < names.length; i++){
+		openstr += opentr;
+		openstr += opendcell + names[i] + closedcell;
+		openstr += opendcell + elos[i] + closedcell;
+		openstr += closetr;
+	}
+	openstr += closestr;
+	return openstr;
+}
+
+// when a client connects to the server
+io.sockets.on('connection',function(socket){
+
+	socket.on('checkRankings', function(){
+		//send the user the data
+		data = sqlite3.run(sql);
+		names = [];
+		elos = [];
+		for (i = 0; i< data.length; i++){
+			names.push(data[i].name);
+			elos.push(data[i].elo);
+		}
+		var htmlstr = table(names, elos);
+		io.emit('sendDB', htmlstr);
+		//console.log("sent data");
+	});	
 });
+
+

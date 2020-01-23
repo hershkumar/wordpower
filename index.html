@@ -5,14 +5,30 @@
   <meta charset="utf-8">
 
   <title>WHL Power Rankings</title>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
   <meta name="description" content="Rankings for the Word Hunt League">
   <meta name="author" content="Hersh Kumar">
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
   
 
 </head>
-
+<script type="text/javascript">
+	$(function (){
+		var socket = io.connect();
+		socket.on('connect',function(){
+			//console.log("Connected!");
+			socket.emit('checkRankings');
+			//console.log("asked for rankings!");
+		});
+		socket.on('sendDB', function(msg){
+			$("body").after(msg);
+		});
+	});
+</script>
 <body>
-	<a href="/rankings">See the current Rankings</a>
+	
 </body>
 </html>
