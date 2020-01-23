@@ -24,15 +24,12 @@ $(document).ready(function(){
 
     });
 
-    // https://stackoverflow.com/questions/7717527/smooth-scrolling-when-clicking-an-anchor-link
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        console.log(anchor);
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
+    new fullpage("#fullpage", {
+        responsiveWidth: 700,
+        parallax: true
     });
+
+    $(".sforma").on('click', e => {
+        fullpage_api.moveTo(2);
+    })
 });
