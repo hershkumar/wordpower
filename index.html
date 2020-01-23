@@ -2,56 +2,89 @@
 
 <html>
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>WHL Power Rankings</title>
-  <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-  <meta name="description" content="Rankings for the Word Hunt League">
-  <meta name="author" content="Hersh Kumar">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-<link rel="stylesheet" href="css/style.css">
+    <title>WHL Power Rankings</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <meta name="description" content="Rankings for the Word Hunt League">
+    <meta name="author" content="Hersh Kumar">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
 
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-grid.css">
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+    
+    <link rel="stylesheet" href="lib/fullpage/fullpage.css">
+    <script src="lib/fullpage/fullpage.js"></script>
+
+    <!-- Custom styles/scripts -->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="client.js"></script>
 </head>
-<script type="text/javascript">
-	$(document).ready(function(){
-		var socket = io.connect();
-		socket.on('connect',function(){
-			socket.emit('checkRankings');
-		});
-		socket.on('sendDB', function(msg){
-			$("#tableHere").empty();
-			$("#tableHere").append(msg);
-		});
 
-		$("form").submit(function(e){
-			e.preventDefault();
-			var name1 = $("#name1").val();
-			var name2 = $("#name2").val();
-			msg = [name1, name2];
-
-			// check the message for dumb stuff
-
-			// empty the two text boxes
-			$("#name1").empty();
-			$("#name2").empty();
-			// actually submit to the server that we have a new game
-
-			socket.emit('submitNewGame', msg);
-			
-		});
-	});
-
-</script>
 <body>
-<form action=''>
-    Winner: <input id='name1' name='name1' autocomplete="off"/>
-    Loser: <input id='name2' name='name2' autocomplete="off"/>
-    <input type="submit" name="submitButton"/>
-</form>
-<div id="tableHere"></div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a class="navbar-brand" href="#">Word League</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Submit</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Leaderboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Statistics</a>
+            </li>
+    </div>
+</nav>
+
+<div class="jumbotron fullheight">
+    <center>
+        <h1 class="display-4">Welcome to the Word League!</h1>
+        <a href="#submitform" class="btn btn-primary btn-lg" role="button">Submit Game</a>
+    </center>
+</div>
+
+<div class="container fullheight" id="submitform">
+    <br> <br> <br>
+    <form action=''>
+        <div class="container">
+            <div class="form-group row">
+                <label for="name1" class="col-sm-2 col-form-label">Winner:</label>
+                <input type="text" name="name1" id="name1">
+            </div>
+            <div class="form-group row">
+                <label for="name2" class="col-sm-2 col-form-label">Loser:</label>
+                <input type="text" name="name1" id="name2">
+            </div>
+            <div class="form-group row">
+                <label for="score1" class="col-sm-2 col-form-label">Winning Score:</label>
+                <input type="text" name="name1" id="score1">
+            </div>
+            <div class="form-group row">
+                <label for="score2" class="col-sm-2 col-form-label">Losing Score:</label>
+                <input type="text" name="name1" id="score2">
+            </div>
+            <div class="form-group row">
+                <label for="word" class="col-sm-2 col-form-label">Winner's Longest Word:</label>
+                <input type="text" name="name1" id="word">
+            </div>
+            <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
+        </div>
+    </form>
+
+
+</div>
 </body>
 </html>
