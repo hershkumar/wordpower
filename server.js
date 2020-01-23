@@ -120,5 +120,6 @@ function getTable(){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
 	}
-	return table(names, elos);
+	// return table(names, elos);
+	return {'names': names, 'elos': elos};
 }
