@@ -11,12 +11,12 @@ app.use(express.static(path.join(__dirname, '/public')));
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
 // sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',500)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',100)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',500)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',500)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',500)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',50)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',1000)");
 
 console.log('...done.');
 
@@ -82,6 +82,12 @@ io.sockets.on('connection',function(socket){
 			//update value for both players
 			var p1NewElo = e1 + deltaElo;
 			var p2NewElo = e2 - deltaElo;
+			if (p1NewElo <= 0){
+				p1NewElo = 0;
+			}
+			if (p2NewElo <= 0){
+				p2NewElo = 0;
+			}
 			sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
 				$newElo:p1NewElo,
 				$playerName: name1
@@ -91,6 +97,7 @@ io.sockets.on('connection',function(socket){
 				$playerName: name2
 			});
 		}
+		io.emit('sendDB',getTable());
 	});
 });
 

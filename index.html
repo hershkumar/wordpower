@@ -23,7 +23,8 @@
 			socket.emit('checkRankings');
 		});
 		socket.on('sendDB', function(msg){
-			$("body").after(msg);
+			$("#tableHere").empty();
+			$("#tableHere").append(msg);
 		});
 
 		$("form").submit(function(e){
@@ -35,12 +36,12 @@
 			// check the message for dumb stuff
 
 			// empty the two text boxes
-			$("name1").empty();
-			$("name2").empty();
+			$("#name1").empty();
+			$("#name2").empty();
 			// actually submit to the server that we have a new game
 
 			socket.emit('submitNewGame', msg);
-
+			
 		});
 	});
 
@@ -51,6 +52,6 @@
     Loser: <input id='name2' name='name2' autocomplete="off"/>
     <input type="submit" name="submitButton"/>
 </form>
-
+<div id="tableHere"></div>
 </body>
 </html>
