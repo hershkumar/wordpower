@@ -73,12 +73,20 @@ io.sockets.on('connection',function(socket){
 	});	
 
 	socket.on('submitNewGame',function(msg){
-		if (msg[0] != "" && msg[1] != ""){
-			var name1 = msg[0];
-			var name2 = msg[1];
+		var name1 = msg[0];
+		var name2 = msg[1];
+		//check whether the names are in the db
+		var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			$name: name1
+		});
+		var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			$name: name2
+		});
+		if (nameCheck1 != null && nameCheck2 != null){
 			updateElos(name1,name2);
+			io.emit('sendDB', getTable());
 		}
-		io.emit('sendDB', getTable());
+
 	});
 });
 
