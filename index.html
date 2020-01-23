@@ -2,54 +2,46 @@
 
 <html>
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>WHL Power Rankings</title>
-  <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-  <meta name="description" content="Rankings for the Word Hunt League">
-  <meta name="author" content="Hersh Kumar">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-<link rel="stylesheet" href="css/style.css">
-
-
+    <title>WHL Power Rankings</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <meta name="description" content="Rankings for the Word Hunt League">
+    <meta name="author" content="Hersh Kumar">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-grid.css">
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+    <script src="client.js"></script>
 </head>
-<script type="text/javascript">
-	$(document).ready(function(){
-		var socket = io.connect();
-		socket.on('connect',function(){
-			socket.emit('checkRankings');
-		});
-		socket.on('sendDB', function(msg){
-			$("body").after(msg);
-		});
 
-		$("form").submit(function(e){
-			e.preventDefault();
-			var name1 = $("#name1").val();
-			var name2 = $("#name2").val();
-			msg = [name1, name2];
-
-			// check the message for dumb stuff
-
-			// empty the two text boxes
-			$("name1").empty();
-			$("name2").empty();
-			// actually submit to the server that we have a new game
-
-			socket.emit('submitNewGame', msg);
-
-		});
-	});
-
-</script>
 <body>
+
 <form action=''>
-    Winner: <input id='name1' name='name1' autocomplete="off"/>
-    Loser: <input id='name2' name='name2' autocomplete="off"/>
-    <input type="submit" name="submitButton"/>
+    <div class="container">
+        <div class="form-group row">
+            <label for="name1">Winner:</label>
+            <input type="text" name="name1" id="name1">
+        </div>
+        <div class="form-group row">
+            <label for="name2">Loser:</label>
+            <input type="text" name="name1" id="name2">
+        </div>
+        <div class="form-group row">
+            <label for="score1">Winning Score:</label>
+            <input type="text" name="name1" id="score1">
+        </div>
+        <div class="form-group row">
+            <label for="score2">Losing Score:</label>
+            <input type="text" name="name1" id="score2">
+        </div>
+        <div class="form-group row">
+            <label for="word">Winner's Longest Word:</label>
+            <input type="text" name="name1" id="word">
+        </div>
+        <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
+    </div>
 </form>
 
 </body>
