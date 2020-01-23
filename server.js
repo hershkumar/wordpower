@@ -5,12 +5,19 @@ var sqlite3 = require('sqlite-sync');
 var io = require('socket.io')(http);
 var path = require('path');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
-//var db = new sqlite3.Database('./db/rankings.db');
 sqlite3.connect('db/rankings.db');
+// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',500)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',100)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',500)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',500)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',500)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',50)");
+
 console.log('...done.');
 
 
@@ -32,7 +39,7 @@ http.listen(port,'0.0.0.0', function(){
     console.log('listening on *:', port);
 });
 
-let sql = `SELECT * from players ORDER BY elo DESC`;
+
 
 
 function table(names, elos) {
@@ -58,17 +65,53 @@ io.sockets.on('connection',function(socket){
 
 	socket.on('checkRankings', function(){
 		//send the user the data
-		data = sqlite3.run(sql);
-		names = [];
-		elos = [];
-		for (i = 0; i< data.length; i++){
-			names.push(data[i].name);
-			elos.push(data[i].elo);
-		}
-		var htmlstr = table(names, elos);
-		io.emit('sendDB', htmlstr);
-		//console.log("sent data");
+		io.emit('sendDB', getTable());
 	});	
+
+	socket.on('submitNewGame',function(msg){
+		if (msg[0] != "" && msg[1] != ""){
+			var name1 = msg[0];
+			var name2 = msg[1];
+
+			var e1 = getPlayerElo(name1);
+			var e2 = getPlayerElo(name2);
+			
+			var deltaElo = 0;
+			// do cost calculation here
+			deltaElo = parseInt(30 + (e2-e1)/30);
+			//update value for both players
+			var p1NewElo = e1 + deltaElo;
+			var p2NewElo = e2 - deltaElo;
+			sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
+				$newElo:p1NewElo,
+				$playerName: name1
+			});
+			sqlite3.run("UPDATE players SET elo = $newElo WHERE name = $playerName",{
+				$newElo:p2NewElo,
+				$playerName: name2
+			});
+		}
+	});
 });
 
 
+
+function getPlayerElo(name){
+	var player = sqlite3.run("SELECT * FROM players elo WHERE name = $playerName",{
+		$playerName: name
+	});
+	var elo = player[0].elo;
+	return elo
+}
+
+function getTable(){
+	let sql = `SELECT * from players ORDER BY elo DESC`;
+	data = sqlite3.run(sql);
+	names = [];
+	elos = [];
+	for (i = 0; i< data.length; i++){
+		names.push(data[i].name);
+		elos.push(data[i].elo);
+	}
+	return table(names, elos);
+}

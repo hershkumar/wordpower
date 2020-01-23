@@ -12,26 +12,45 @@
   <meta name="description" content="Rankings for the Word Hunt League">
   <meta name="author" content="Hersh Kumar">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-<link rel="stylesheet" href="css/utils.css">
-<link rel="stylesheet" href="css/main.css">
 <link rel="stylesheet" href="css/style.css">
 
 
 </head>
 <script type="text/javascript">
-	$(function (){
+	$(document).ready(function(){
 		var socket = io.connect();
 		socket.on('connect',function(){
-			//console.log("Connected!");
 			socket.emit('checkRankings');
-			//console.log("asked for rankings!");
 		});
 		socket.on('sendDB', function(msg){
 			$("body").after(msg);
 		});
+
+		$("form").submit(function(e){
+			e.preventDefault();
+			var name1 = $("#name1").val();
+			var name2 = $("#name2").val();
+			msg = [name1, name2];
+
+			// check the message for dumb stuff
+
+			// empty the two text boxes
+			$("name1").empty();
+			$("name2").empty();
+			// actually submit to the server that we have a new game
+
+			socket.emit('submitNewGame', msg);
+
+		});
 	});
+
 </script>
 <body>
+<form action=''>
+    Winner: <input id='name1' name='name1' autocomplete="off"/>
+    Loser: <input id='name2' name='name2' autocomplete="off"/>
+    <input type="submit" name="submitButton"/>
+</form>
 
 </body>
 </html>
