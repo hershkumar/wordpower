@@ -3,6 +3,9 @@ var app = express();
 var http = require('http').createServer(app);
 var sqlite3 = require('sqlite-sync');
 var io = require('socket.io')(http);
+var path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
