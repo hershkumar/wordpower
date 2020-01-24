@@ -79,7 +79,7 @@ $(document).ready(function(){
 
 
     });
-    
+
     new fullpage("#fullpage", {
         responsiveWidth: 700,
         autoScrolling: false,
