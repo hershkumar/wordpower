@@ -163,8 +163,7 @@ function checkForGame(winner, loser, score1, score2, longword){
 		$s2: score2,
 		$word: longword
 	});
-	console.log(searched == []);
-	if (searched == []){
+	if (searched[0] == undefined){
 		return false;
 	}
 	else {
