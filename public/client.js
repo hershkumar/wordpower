@@ -23,11 +23,15 @@ function table(obj) {
     s += "</tr></thead>";
 
     s += "<tbody>";
-    for ([idx, [n, elo]] of zip(obj['Name'], obj['ELO']).entries()) {
+    for ([idx, n] of obj['Name'].entries()) {
         s += "<tr>";
         s += th.format("row", idx + 1);
         s += td.format(n);
-        s += td.format(elo);
+        for (arr in obj) {
+            if (arr !== 'Name') {
+                s += td.format(obj[arr][idx]);
+            }
+        }
         s += "</tr>";
     }
     s += "</tbody>";
