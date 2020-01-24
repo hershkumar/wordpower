@@ -1,9 +1,28 @@
+function table(names, elos) {
+    var openstr = "<table><tr><th>Name</th><th>Elo</th></tr>";
+    var closestr = "</table>";
+    var opentr = "<tr>";
+    var closetr = "</tr>";
+    var opendcell = "<td>";
+    var closedcell = "</td>";
+
+    for(i = 0; i < names.length; i++){
+        openstr += opentr;
+        openstr += opendcell + names[i] + closedcell;
+        openstr += opendcell + elos[i] + closedcell;
+        openstr += closetr;
+    }
+    openstr += closestr;
+    return openstr;
+}
+
 $(document).ready(function(){
     var socket = io.connect();
     socket.on('connect',function(){
         socket.emit('checkRankings');
     });
     socket.on('sendDB', function(msg){
+        console.log(msg);
         $("tablehere").empty();
         $("tablehere").append(msg);
     });
