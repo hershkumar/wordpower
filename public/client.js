@@ -1,19 +1,38 @@
-function table(names, elos) {
-    var openstr = "<table><tr><th>Name</th><th>Elo</th></tr>";
-    var closestr = "</table>";
-    var opentr = "<tr>";
-    var closetr = "</tr>";
-    var opendcell = "<td>";
-    var closedcell = "</td>";
+String.prototype.format = function() { // from https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function (match, number) {
+        return typeof args[number] !== 'undefined' ? args[number] : match;
+    });
+};
 
-    for(i = 0; i < names.length; i++){
-        openstr += opentr;
-        openstr += opendcell + names[i] + closedcell;
-        openstr += opendcell + elos[i] + closedcell;
-        openstr += closetr;
+const zip = (a, b) => {
+    return a.map((e, i) => {
+        return [e, b[i]];
+    });
+};
+
+function table(obj) {
+    var s = "";
+
+    var th = "<th scope=\"{0}\">{1}</th>";
+    var td = "<td scope=\"row\">{0}</td>";
+
+    s += "<thead><tr>";
+    s += th.format("col", "Rank");
+    for (i in obj) { s += th.format("col", i); }
+    s += "</tr></thead>";
+
+    s += "<tbody>";
+    for ([idx, [n, elo]] of zip(obj['Name'], obj['ELO']).entries()) {
+        s += "<tr>";
+        s += th.format("row", idx + 1);
+        s += td.format(n);
+        s += td.format(elo);
+        s += "</tr>";
     }
-    openstr += closestr;
-    return openstr;
+    s += "</tbody>";
+
+    return s;
 }
 
 $(document).ready(function(){
@@ -21,10 +40,8 @@ $(document).ready(function(){
     socket.on('connect',function(){
         socket.emit('checkRankings');
     });
-    socket.on('sendDB', function(msg){
-        console.log(msg);
-        $("tablehere").empty();
-        $("tablehere").append(msg);
+    socket.on('sendDB', msg => {
+        $("#tablehere").empty().append(table(msg));
     });
 
     $("#submitform").submit(function(e){

@@ -80,7 +80,7 @@ function getTable(){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
 	}
-  return {'names': names, 'elos': elos};
+  return {'Name': names, 'ELO': elos};
 }
 
 function updateElos(name1, name2){
