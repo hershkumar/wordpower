@@ -56,7 +56,8 @@ $(document).ready(function(){
         var score1 = $("#score1").val();
         var score2 = $("#score2").val();
         var longword = $("#word").val();
-        msg = [name1, name2, score1, score2, longword];
+        var password = $("#password").val();
+        msg = [name1, name2, score1, score2, longword, password];
         var emit = true;
         // check the message for dumb stuff
         for (i = 0; i< msg.length; i++){
@@ -71,6 +72,7 @@ $(document).ready(function(){
             $("#score1").val('');
             $("#score2").val('');
             $("#word").val('');
+            $("#password").val('');
             // actually submit to the server that we have a new game
 
             socket.emit('submitNewGame', msg);

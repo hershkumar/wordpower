@@ -4,9 +4,12 @@ var http = require('http').createServer(app);
 var sqlite3 = require('sqlite-sync');
 var io = require('socket.io')(http);
 var path = require('path');
+var fs = require('fs');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+
+const key = fs.readFileSync('pass.txt'); 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
@@ -52,30 +55,30 @@ io.sockets.on('connection',function(socket){
 	});	
 
 	socket.on('submitNewGame',function(msg){
-		console.log("got new game submission");
 		var name1 = msg[0];
 		var name2 = msg[1];
 		var score1 = msg[2];
 		var score2 = msg[3];
 		var longword = msg[4];
-		//check whether the names are in the db
-		var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
-			$name: name1
-		});
-		var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
-			$name: name2
-		});
-		if (nameCheck1 != null && nameCheck2 != null){
-			var gameCheck = checkForGame(name1, name2, score1, score2, longword);
-			console.log(gameCheck);
-			if (gameCheck == false){
-				updateElos(name1,name2);
-				io.emit('sendDB', getTable());
-				console.log("Updated elos in database");
-				addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+		var password = msg[5];
+		//check password
+		if (password == key){	
+			//check whether the names are in the db
+			var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+				$name: name1
+			});
+			var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+				$name: name2
+			});
+			if (nameCheck1 != null && nameCheck2 != null){
+				var gameCheck = checkForGame(name1, name2, score1, score2, longword);
+				if (gameCheck == false){
+					updateElos(name1,name2);
+					io.emit('sendDB', getTable());
+					addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+				}
 			}
 		}
-
 	});
 });
 
@@ -106,7 +109,7 @@ function updateElos(name1, name2){
 
 	var deltaElo = 0;
 	// do cost calculation here
-	deltaElo = parseInt(30 + (e2-e1)/30);
+	deltaElo = parseInt(30 + (e2-e1)/60);
 	//update value for both players
 	var p1NewElo = e1 + deltaElo;
 	var p2NewElo = e2 - deltaElo;
@@ -124,7 +127,6 @@ function updateElos(name1, name2){
 		$newElo:p2NewElo,
 		$playerName: name2
 	});
-	console.log("updated database");
 }
 
 function addGameToDb(name1, name2, score1, score2, longword, winner_new_elo, loser_new_elo){
