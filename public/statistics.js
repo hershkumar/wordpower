@@ -47,14 +47,14 @@ function read_data(data) {
 
     names = data.players.map(i => i.name);
 
-    make_graph(names, 'elo');
+    make_graph('elo');
 
     // $("#checkboxes").empty().append(checkboxes());
 }
 
-function make_graph(sub_names, type) {
+function make_graph(type) {
     var series = [];
-    for (name of sub_names) {
+    for (name of names) {
         series.push({'values': games[type][name], 'text': name});
     }
 
