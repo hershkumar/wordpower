@@ -59,7 +59,6 @@ function make_graph(sub_names, type) {
     }
 
     var all = series.map(a => a.values.map(b => b[1])).flat();
-    console.log(all, Math.min(all), Math.max(all));
 
     zingchart.render({
         id: 'myChart',
