@@ -66,11 +66,11 @@ $(document).ready(function(){
         }
         if (emit == true){
             // empty the text boxes
-            $("#name1").empty();
-            $("#name2").empty();
-            $("#score1").empty();
-            $("#score2").empty();
-            $("#word").empty();
+            $("#name1").val('');
+            $("#name2").val('');
+            $("#score1").val('');
+            $("#score2").val('');
+            $("#word").val('');
             // actually submit to the server that we have a new game
 
             socket.emit('submitNewGame', msg);
