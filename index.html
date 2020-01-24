@@ -7,7 +7,7 @@
     <title>WHL Power Rankings</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <meta name="description" content="Rankings for the Word Hunt League">
-    <meta name="author" content="Hersh Kumar">
+    <meta name="author" content="Hersh Kumar and Simon Chervenak">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
 
@@ -33,12 +33,12 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto" id="nav-list">
             <li class="nav-item active">
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link sforma">Submit</a>
+                <a class="nav-link">Submit</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Leaderboard</a>
@@ -53,7 +53,7 @@
 <div id="fullpage">
     <div class="section jumbotron fullheight">
         <h1 class="display-4">Welcome to the Word League!</h1>
-        <a class="btn btn-primary btn-lg sforma" role="button">Submit Game</a>
+        <a class="btn btn-primary btn-lg" role="button" onclick="fullpage_api.moveTo(2);">Submit Game</a>
     </div>
 
     <div class="section container fullheight" id="submitform">
