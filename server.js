@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
-//sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
+// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
@@ -20,9 +20,10 @@ sqlite3.connect('db/rankings.db');
 
 // make mock game database
 
-//sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
-//sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
+// sqlite3.run("CREATE TABLE games (time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
+// sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
 console.log('...done.');
+console.log(sqlite3.run(`SELECT * FROM games`));
 
 
 app.all('*', function(req, res, next) {
@@ -53,9 +54,14 @@ io.sockets.on('connection',function(socket){
 	socket.on('checkRankings', function(){
 		//send the user the data
 		io.emit('sendDB', getTable());
-	});	
+	});
 
-	socket.on('submitNewGame',function(msg){
+    socket.on('getGames', function(){
+        //send the user the data
+        io.emit('sendGames', getGames());
+    });
+
+    socket.on('submitNewGame',function(msg){
 		var name1 = msg[0];
 		var name2 = msg[1];
 		var score1 = msg[2];
@@ -87,15 +93,20 @@ function getPlayerElo(name){
 }
 
 function getTable(){
-	let sql = `SELECT * from players ORDER BY elo DESC`;
+	let sql = `SELECT * FROM players ORDER BY elo DESC`;
 	data = sqlite3.run(sql);
 	names = [];
 	elos = [];
-	for (i = 0; i< data.length; i++){
+	for (i = 0; i < data.length; i++){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
 	}
   return {'Name': names, 'ELO': elos};
+}
+
+function getGames(){
+    return {'games': sqlite3.run(`SELECT * FROM games`),
+            'players': sqlite3.run(`SELECT * FROM players`)};
 }
 
 function updateElos(name1, name2){
