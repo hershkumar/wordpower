@@ -25,7 +25,7 @@ $(document).ready(function(){
             }
         }
         if (emit == true){
-            // empty the two text boxes
+            // empty the text boxes
             $("#name1").empty();
             $("#name2").empty();
             $("#score1").empty();
@@ -34,6 +34,7 @@ $(document).ready(function(){
             // actually submit to the server that we have a new game
 
             socket.emit('submitNewGame', msg);
+            console.log("submitted game!");
         }
 
 
