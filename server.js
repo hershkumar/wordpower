@@ -43,27 +43,6 @@ http.listen(port,'0.0.0.0', function(){
     console.log('listening on *:', port);
 });
 
-
-
-
-function table(names, elos) {
-	var openstr = "<table><tr><th>Name</th><th>Elo</th></tr>";
-	var closestr = "</table>";
-	var opentr = "<tr>";
-	var closetr = "</tr>";
-	var opendcell = "<td>";
-	var closedcell = "</td>";
-
-	for(i = 0; i < names.length; i++){
-		openstr += opentr;
-		openstr += opendcell + names[i] + closedcell;
-		openstr += opendcell + elos[i] + closedcell;
-		openstr += closetr;
-	}
-	openstr += closestr;
-	return openstr;
-}
-
 // when a client connects to the server
 io.sockets.on('connection',function(socket){
 
@@ -112,7 +91,7 @@ function getTable(){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
 	}
-  return {'names': names, 'elos': elos};
+  return {'Name': names, 'ELO': elos};
 }
 
 function updateElos(name1, name2){
