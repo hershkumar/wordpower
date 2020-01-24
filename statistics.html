@@ -46,7 +46,40 @@
 </nav>
 
 <main>
-<div id="myChart"></div>
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="timechart-select">Time Chart of </label>
+                </div>
+                <select class="custom-select" id="timechart-select">
+                    <option selected value="elo">ELO</option>
+                    <option disabled value="score">More to come...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="time-chart"></div>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="barchart-select">Bar Chart of </label>
+                </div>
+                <select class="custom-select" id="barchart-select">
+                    <option selected value="wins">Wins</option>
+                    <option value="losses">Losses</option>
+                    <option value="perc">Winning Percentage</option>
+                    <option value="elo">ELO</option>
+                    <option value="total">Total Games</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="bar-chart"></div>
+    </div>
 </main>
 </body>
 </html>

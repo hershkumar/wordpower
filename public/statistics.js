@@ -1,4 +1,15 @@
-var games = {}, names = [];
+var games = {}, names = [], data_games = {};
+
+const LEGEND = {
+    "header": {
+        "text": "Players"
+    },
+    // "max-items": 10, // todo fix
+    // "overflow": "scroll",
+    "highlight-plot": true,
+    "minimize":true,
+    "draggable":true
+};
 
 function obj_from_names(players) {
     var o = {};
@@ -25,6 +36,8 @@ function checkboxes() {
 }
 
 function read_data(data) {
+    data_games = data;
+
     games = {};
     games['elo'] = obj_from_names(data.players);
     games['score'] = obj_from_names(data.players);
@@ -47,13 +60,16 @@ function read_data(data) {
 
     names = data.players.map(i => i.name);
 
-    make_graph('elo');
+    make_time_chart();
+    make_bar_chart();
 
     // $("#checkboxes").empty().append(checkboxes());
 }
 
-function make_graph(type) {
+function make_time_chart() {
     var series = [];
+    var type = $("#timechart-select").val();
+
     for (name of names) {
         series.push({'values': games[type][name], 'text': name});
     }
@@ -61,18 +77,10 @@ function make_graph(type) {
     var all = series.map(a => a.values.map(b => b[1])).flat();
 
     zingchart.render({
-        id: 'myChart',
+        id: 'time-chart',
         data: {
             type: 'line',
-            "legend": {
-                "header": {
-                    "text": "Players"
-                },
-                "overflow": "page",
-                "highlight-plot":true,
-                "minimize":true,
-                "draggable":true
-            },
+            legend: LEGEND,
             scaleX: {
                 transform: {
                     type: 'date',
@@ -88,6 +96,60 @@ function make_graph(type) {
     });
 }
 
+function make_bar_chart() {
+    var p = {};
+    for (i of names) { p[i] = [0, 0]; }
+    for (g of data_games.games) {
+        for (i of names) {
+            if (i === g.winner)     { p[i][0]++; }
+            else if (i === g.loser) { p[i][1]++; }
+        }
+    }
+
+    var type = $("#barchart-select").val();
+    var series = [];
+    switch (type) {
+        case "wins":
+            for (i of names) {
+                series.push({"values": [p[i][0]], "text": i});
+            }
+            break;
+        case "losses":
+            for (i of names) {
+                series.push({"values": [p[i][1]], "text": i});
+            }
+            break;
+        case "perc":
+            for (i of names) {
+                series.push({"values": [p[i][0] / (p[i][0] + p[i][1])], "text": i});
+            }
+            break;
+        case "elo":
+            break;
+        case "total":
+            for (i of names) {
+                series.push({"values": [(p[i][0] + p[i][1])], "text": i});
+            }
+            break;
+        default: break;
+    }
+
+    series = series.filter(i => !Number.isNaN(i.values[0]) && i.values[0] !== 0);
+
+    series.sort((a, b) => (b.values[0] - a.values[0]) );
+
+    console.log(series);
+
+    zingchart.render({
+        id: 'bar-chart',
+        data: {
+            type: 'hbar',
+            "legend": LEGEND,
+            series: series
+        }
+    });
+}
+
 $(document).ready(function() {
     var socket = io.connect();
     socket.on('connect', function () {
@@ -95,4 +157,7 @@ $(document).ready(function() {
     });
 
     socket.on('sendGames', read_data);
+
+    $("#timechart-select").on('change', make_time_chart);
+    $("#barchart-select").on('change', make_bar_chart);
 });
