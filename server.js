@@ -65,9 +65,12 @@ io.sockets.on('connection',function(socket){
 			$name: name2
 		});
 		if (nameCheck1 != null && nameCheck2 != null){
-			updateElos(name1,name2);
-			io.emit('sendDB', getTable());
-			addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+			var gameCheck = checkForGame(name1, name2, score1, score2, longword);
+			if (gameCheck == false){
+				updateElos(name1,name2);
+				io.emit('sendDB', getTable());
+				addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+			}
 		}
 
 	});
@@ -144,4 +147,22 @@ function getPlayerWinPercentage(name){
 	});
 
 	return (wins/losses) * 100;
+}
+
+//returns true if the game already exists
+//returns false if the game doesn't exist
+function checkForGame(winner, loser, score1, score2, longword){
+	var searched = sqlite3.run("SELECT * FROM games WHERE winner=$p1 AND loser=$p2 AND winner_score=$s1 AND loser_score=$s2 AND longword=$word",{
+		$p1: winner,
+		$p2: loser,
+		$s1: score1,
+		$s2: score2,
+		$word: longword
+	});
+	if (searched == []){
+		return false;
+	}
+	else {
+		return true;		
+	}
 }
