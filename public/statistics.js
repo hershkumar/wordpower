@@ -57,6 +57,10 @@ function make_graph(sub_names, type) {
     for (name of sub_names) {
         series.push({'values': games[type][name], 'text': name});
     }
+
+    var all = series.map(a => a.values.map(b => b[1])).flat();
+    console.log(all, Math.min(all), Math.max(all));
+
     zingchart.render({
         id: 'myChart',
         data: {
@@ -65,7 +69,6 @@ function make_graph(sub_names, type) {
                 "header": {
                     "text": "Players"
                 },
-                "max-items": 6,
                 "overflow": "page",
                 "highlight-plot":true,
                 "minimize":true,
@@ -76,6 +79,10 @@ function make_graph(sub_names, type) {
                     type: 'date',
                     all: '%m/%d/%y  %h:%i %A'
                 }
+            },
+            scaleY: {
+                'min-value': Math.min(...all) - 100,
+                'max-value': Math.max(...all) + 100,
             },
             series: series
         }

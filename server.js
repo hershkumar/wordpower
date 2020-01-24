@@ -10,17 +10,28 @@ app.use(express.static(path.join(__dirname, '/public')));
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
-// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',1000)");
-
+// sqlite3.run("DROP TABLE players;");
+sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Lucinda',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Shawn',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Simon',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Emmy',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Katherine',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Nate',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Victoria',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Zoe',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Eric',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Dhruv',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Daniel',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Rachel',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Aarthi',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Shreeya',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Hersh',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Seoyoung',1000)");
+// sqlite3.run("INSERT INTO players (name, elo) VALUES ('Patrick',1000)");
 // make mock game database
-
-// sqlite3.run("CREATE TABLE games (time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
+// sqlite3.run("DROP TABLE games;");
+sqlite3.run("CREATE TABLE games (time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
 // sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
 console.log('...done.');
 console.log(sqlite3.run(`SELECT * FROM games`));
