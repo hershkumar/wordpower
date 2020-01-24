@@ -39,6 +39,10 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/statistics', function(req, res){
+    res.sendFile(__dirname + '/statistics.html');
+});
+
 http.listen(port,'0.0.0.0', function(){
     console.log('listening on *:', port);
 });
