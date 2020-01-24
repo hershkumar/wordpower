@@ -22,3 +22,7 @@ table tr td:first-child::before
 .navbar {
     margin-bottom: 0px;
 }
+
+main {
+     margin: 0 50px 0;
+ }
