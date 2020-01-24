@@ -52,6 +52,7 @@ io.sockets.on('connection',function(socket){
 	});	
 
 	socket.on('submitNewGame',function(msg){
+		console.log("got new game submission");
 		var name1 = msg[0];
 		var name2 = msg[1];
 		var score1 = msg[2];
@@ -66,9 +67,11 @@ io.sockets.on('connection',function(socket){
 		});
 		if (nameCheck1 != null && nameCheck2 != null){
 			var gameCheck = checkForGame(name1, name2, score1, score2, longword);
+			console.log(gameCheck);
 			if (gameCheck == false){
 				updateElos(name1,name2);
 				io.emit('sendDB', getTable());
+				console.log("Updated elos in database");
 				addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
 			}
 		}
@@ -121,6 +124,7 @@ function updateElos(name1, name2){
 		$newElo:p2NewElo,
 		$playerName: name2
 	});
+	console.log("updated database");
 }
 
 function addGameToDb(name1, name2, score1, score2, longword, winner_new_elo, loser_new_elo){
@@ -159,6 +163,7 @@ function checkForGame(winner, loser, score1, score2, longword){
 		$s2: score2,
 		$word: longword
 	});
+	console.log(searched == []);
 	if (searched == []){
 		return false;
 	}
