@@ -7,7 +7,7 @@
     <title>WHL Power Rankings</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <meta name="description" content="Rankings for the Word Hunt League">
-    <meta name="author" content="Hersh Kumar">
+    <meta name="author" content="Hersh Kumar and Simon Chervenak">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
 
@@ -34,7 +34,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto" id="nav-list">
             <li class="nav-item active">
                 <a class="nav-link">Home <span class="sr-only">(current)</span></a>
             </li>
@@ -54,7 +54,7 @@
 <div id="fullpage">
     <div class="section jumbotron fullheight">
         <h1 class="display-4">Welcome to the Word League!</h1>
-        <a class="btn btn-primary btn-lg sforma" role="button">Submit Game</a>
+        <a class="btn btn-primary btn-lg" role="button" onclick="fullpage_api.moveTo(2);">Submit Game</a>
     </div>
 
     <div class="section container fullheight" id="submitform">
@@ -70,22 +70,22 @@
                 </div>
                 <div class="form-group row">
                     <label for="score1" class="col-sm-2 col-form-label">Winning Score:</label>
-                    <input type="text" name="name1" id="score1">
+                    <input type="text" name="score1" id="score1">
                 </div>
                 <div class="form-group row">
                     <label for="score2" class="col-sm-2 col-form-label">Losing Score:</label>
-                    <input type="text" name="name1" id="score2">
+                    <input type="text" name="score2" id="score2">
                 </div>
                 <div class="form-group row">
                     <label for="word" class="col-sm-2 col-form-label">Winner's Longest Word:</label>
-                    <input type="text" name="name1" id="word">
+                    <input type="text" name="word" id="word">
                 </div>
                 <button type="submit" class="btn btn-primary" name="submitButton">Submit</button>
             </div>
         </form>
     </div>
 
-    <div class="section" id="rankingtable">
+    <div class="section bg-light" id="rankingtable">
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
@@ -96,7 +96,7 @@
                 <p>
                     These rankings are the overall rating table.
                     For more complicated statistics, as well as the ELO calculation,
-                    see <a href="#">statistics</a>.</a>
+                    see <a href="#">statistics</a>.
                 </p>
             </div>
             <div class="col-2"></div>

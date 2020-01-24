@@ -20,8 +20,8 @@ sqlite3.connect('db/rankings.db');
 
 // make mock game database
 
-//sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INT, loser_score INT, longword TEXT)");
-//sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword) VALUES('Dhruv','Nate', 10000, 5000,'yeet')");
+//sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
+//sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
 console.log('...done.');
 
 
@@ -56,15 +56,26 @@ io.sockets.on('connection',function(socket){
 	});	
 
 	socket.on('submitNewGame',function(msg){
-		if (msg[0] != "" && msg[1] != ""){
-			var name1 = msg[0];
-			var name2 = msg[1];
+		var name1 = msg[0];
+		var name2 = msg[1];
+		var score1 = msg[2];
+		var score2 = msg[3];
+		var longword = msg[4];
+		//check whether the names are in the db
+		var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			$name: name1
+		});
+		var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			$name: name2
+		});
+		if (nameCheck1 != null && nameCheck2 != null){
 			updateElos(name1,name2);
+			io.emit('sendDB', getTable());
+			addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
 		}
-		io.emit('sendDB', getTable());
+
 	});
 });
-
 
 
 function getPlayerElo(name){
@@ -111,4 +122,30 @@ function updateElos(name1, name2){
 		$newElo:p2NewElo,
 		$playerName: name2
 	});
+}
+
+function addGameToDb(name1, name2, score1, score2, longword, winner_new_elo, loser_new_elo){
+	// insert the game into the database
+	sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES($winner, $loser, $sc1, $sc2, $word, $wnew, $lnew)",{
+		$winner: name1,
+		$loser: name2,
+		$sc1: score1,
+		$sc2: score2,
+		$word: longword,
+		$wnew: winner_new_elo,
+		$lnew: loser_new_elo
+	});
+
+}
+
+function getPlayerWinPercentage(name){
+	var losses = sqlite3.run("SELECT COUNT(*) FROM games WHERE loser=$player",{
+		$player: name
+	});
+
+	var wins = sqlite3.run("SELECT COUNT(*) FROM games WHERE winner=$player",{
+		$player: name
+	});
+
+	return (wins/losses) * 100;
 }

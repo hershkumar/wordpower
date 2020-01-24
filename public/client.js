@@ -31,6 +31,7 @@ $(document).ready(function(){
     socket.on('connect',function(){
         socket.emit('checkRankings');
     });
+
     socket.on('sendDB', msg => {
         $("#tablehere").empty().append(table(msg));
     });
@@ -43,27 +44,41 @@ $(document).ready(function(){
         var score2 = $("#score2").val();
         var longword = $("#word").val();
         msg = [name1, name2, score1, score2, longword];
-
+        var emit = true;
         // check the message for dumb stuff
+        for (i = 0; i< msg.length; i++){
+            if (msg[i] == "" || msg[i] == null){
+                emit = false;
+            }
+        }
+        if (emit == true){
+            // empty the text boxes
+            $("#name1").val('');
+            $("#name2").val('');
+            $("#score1").val('');
+            $("#score2").val('');
+            $("#word").val('');
+            // actually submit to the server that we have a new game
 
-        // empty the two text boxes
-        $("#name1").empty();
-        $("#name2").empty();
-        $("#score1").empty();
-        $("#score2").empty();
-        $("#word").empty();
-        // actually submit to the server that we have a new game
+            socket.emit('submitNewGame', msg);
+            console.log("submitted game!");
+        }
 
-        socket.emit('submitNewGame', msg);
 
     });
 
     new fullpage("#fullpage", {
         responsiveWidth: 700,
-        parallax: true
+        autoScrolling: false,
+        parallax: true,
+        onLeave: (o, d, dir) => {
+            console.log(o.index, d.index);
+            $("#nav-list li:nth-child({0})".format(o.index + 1)).toggleClass("active");
+            $("#nav-list li:nth-child({0})".format(d.index + 1)).toggleClass("active");
+        }
     });
 
-    $(".sforma").on('click', e => {
-        fullpage_api.moveTo(2);
-    })
+    $("#nav-list li:nth-child(1)").on('click', () => { fullpage_api.moveTo(1); });
+    $("#nav-list li:nth-child(2)").on('click', () => { fullpage_api.moveTo(2); });
+    $("#nav-list li:nth-child(3)").on('click', () => { fullpage_api.moveTo(3); });
 });
