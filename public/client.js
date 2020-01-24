@@ -44,6 +44,7 @@ $(document).ready(function(){
     socket.on('connect',function(){
         socket.emit('checkRankings');
     });
+
     socket.on('sendDB', msg => {
         $("#tablehere").empty().append(table(msg));
     });
@@ -56,18 +57,26 @@ $(document).ready(function(){
         var score2 = $("#score2").val();
         var longword = $("#word").val();
         msg = [name1, name2, score1, score2, longword];
-
+        var emit = true;
         // check the message for dumb stuff
+        for (i = 0; i< msg.length; i++){
+            if (msg[i] == "" || msg[i] == null){
+                emit = false;
+            }
+        }
+        if (emit == true){
+            // empty the text boxes
+            $("#name1").empty();
+            $("#name2").empty();
+            $("#score1").empty();
+            $("#score2").empty();
+            $("#word").empty();
+            // actually submit to the server that we have a new game
 
-        // empty the two text boxes
-        $("#name1").empty();
-        $("#name2").empty();
-        $("#score1").empty();
-        $("#score2").empty();
-        $("#word").empty();
-        // actually submit to the server that we have a new game
+            socket.emit('submitNewGame', msg);
+            console.log("submitted game!");
+        }
 
-        socket.emit('submitNewGame', msg);
 
     });
 
