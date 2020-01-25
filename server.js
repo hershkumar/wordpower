@@ -50,11 +50,14 @@ http.listen(port,'0.0.0.0', function(){
 io.sockets.on('connection',function(socket){
 
 	socket.on('checkRankings', function(){
+		sqlite3.connect('db/rankings.db');
 		//send the user the data
 		io.emit('sendDB', getTable());
+		sqlite3.close();
 	});	
 
 	socket.on('submitNewGame',function(msg){
+		sqlite3.connect('db/rankings.db');
 		var name1 = msg[0].trim();
 		var name2 = msg[1].trim();
 		var score1 = msg[2].trim();
@@ -80,6 +83,7 @@ io.sockets.on('connection',function(socket){
 			}
 		}
 	});
+	sqlite3.close();
 });
 
 
