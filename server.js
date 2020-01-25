@@ -6,7 +6,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var fs = require('fs');
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static('public'));
 
 
 const key = fs.readFileSync('pass.txt'); 
