@@ -9,7 +9,7 @@ var fs = require('fs');
 app.use(express.static('public'));
 
 
-const key = fs.readFileSync('pass.txt').trim(); 
+const key = fs.readFileSync('pass.txt', 'utf-8').trim(); 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
