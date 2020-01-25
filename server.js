@@ -43,7 +43,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/admin.html', function(req, res){
-    res.sendFile(__dirname + '/admin.html');
+    res.sendFile(__dirname + '/restricted/admin.html');
 });
 
 http.listen(port,'0.0.0.0', function(){
