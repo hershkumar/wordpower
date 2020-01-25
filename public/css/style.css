@@ -33,14 +33,15 @@ main {
     margin-right: 0em;
 }
 
-/*.header-fixed tbody {*/
-    /*display: block;*/
-    /*max-height: 450px;*/
-    /*overflow-y: scroll;*/
-/*}*/
 
-/*.header-fixed thead, table tbody tr {*/
-    /*display: table;*/
-    /*width: 150%;*/
-    /*table-layout: fixed;*/
-/*}*/
+.header-fixed thead th {
+    text-align: left;
+    top:0;
+    position: sticky;
+    background-color: white;
+}
+
+.header-fixed {
+    overflow-y: auto;
+    table-layout: fixed;
+}
