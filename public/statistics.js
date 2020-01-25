@@ -1,14 +1,14 @@
 var games = {}, names = [], data_games = {};
 
 const LEGEND = {
-    "header": {
+    header: {
         "text": "Players"
     },
     // "max-items": 10, // todo fix
     // "overflow": "scroll",
     "highlight-plot": true,
-    "minimize":true,
-    "draggable":true
+    minimize: true,
+    draggable: true
 };
 
 function obj_from_names(players) {
@@ -62,6 +62,7 @@ function read_data(data) {
 
     make_time_chart();
     make_bar_chart();
+    make_wins_table();
 
     // $("#checkboxes").empty().append(checkboxes());
 }
@@ -138,16 +139,46 @@ function make_bar_chart() {
 
     series.sort((a, b) => (b.values[0] - a.values[0]) );
 
-    console.log(series);
-
     zingchart.render({
         id: 'bar-chart',
         data: {
             type: 'hbar',
-            "legend": LEGEND,
+            legend: LEGEND,
             series: series
         }
     });
+}
+
+function make_wins_table() {
+    // ids: row-col
+    var s = "<thead>";
+
+    s += `<tr><th scope='col' id='wintable-0-0'></th>`;
+    for ([i, n] of names.entries()) {
+        s += `<th scope='col' id='wintable-0-${i + 1}'>${n}</th>`;
+    }
+    s += "</tr>";
+
+    s += "</thead><tbody>";
+
+    for ([row, n] of names.entries()) {
+        s += "<tr>";
+        s += `<td scope='row' id='wintable-${row + 1}-0'>${n}</td>`;
+        for ([col, n2] of names.entries()) {
+            var wins = 0, losses = 0;
+            for (g of data_games.games) {
+                if (n === g.winner && n2 === g.loser) { wins++; }
+                else if (n === g.loser && n2 === g.winner) { losses++; }
+            }
+            s += `<td id='wintable-${row + 1}-${col + 1}'>${wins}-${losses}</td>`;
+        }
+        s += "</tr>";
+    }
+
+    s += "</tbody>";
+
+    $("#wins-table").empty().append(s);
+    $("#wins-table").stickyTableHeaders();
 }
 
 $(document).ready(function() {

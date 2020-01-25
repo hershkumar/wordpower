@@ -21,6 +21,8 @@
     <script src="lib/fullpage/fullpage.js"></script>
 
     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src="https://unpkg.com/sticky-table-headers"></script>
+
 
     <!-- Custom styles/scripts -->
     <link rel="stylesheet" href="css/style.css">
@@ -31,7 +33,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <a class="navbar-brand" href="#">Word League</a>
+    <a class="navbar-brand" href="/">Word League</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -79,6 +81,18 @@
         </div>
 
         <div id="bar-chart"></div>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="barchart-select">Wins-and-losses Table </label>
+                </div>
+            </div>
+        </div>
+
+        <table id="wins-table" class='table table-sm table-responsive table-striped header-fixed'></table>
     </div>
 </main>
 </body>
