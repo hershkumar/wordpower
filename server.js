@@ -42,6 +42,10 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/admin.html', function(req, res){
+    res.sendFile(__dirname + '/admin.html');
+});
+
 http.listen(port,'0.0.0.0', function(){
     console.log('listening on *:', port);
 });

@@ -1,4 +1,0 @@
-AuthUserFile /admin.html
-AuthName "Admin Panel"
-AuthType Basic
-require valid-user
