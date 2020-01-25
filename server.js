@@ -9,7 +9,7 @@ var fs = require('fs');
 app.use(express.static('public'));
 
 
-const key = fs.readFileSync('pass.txt'); 
+const key = fs.readFileSync('pass.txt').trim(); 
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 sqlite3.connect('db/rankings.db');
@@ -55,12 +55,12 @@ io.sockets.on('connection',function(socket){
 	});	
 
 	socket.on('submitNewGame',function(msg){
-		var name1 = msg[0];
-		var name2 = msg[1];
-		var score1 = msg[2];
-		var score2 = msg[3];
-		var longword = msg[4];
-		var password = msg[5];
+		var name1 = msg[0].trim();
+		var name2 = msg[1].trim();
+		var score1 = msg[2].trim();
+		var score2 = msg[3].trim();
+		var longword = msg[4].trim();
+		var password = msg[5].trim();
 		//check password
 		if (password == key){	
 			//check whether the names are in the db
