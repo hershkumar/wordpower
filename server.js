@@ -247,7 +247,7 @@ function updateElos(name1, name2){
 
 	var deltaElo = 0;
 	// do cost calculation here
-	deltaElo = parseInt(30 + (e2-e1)/60);
+	deltaElo = parseInt(40/(1+ Math.E^(-.0025*(e2-e1))+10));
 	//update value for both players
 	var p1NewElo = e1 + deltaElo;
 	var p2NewElo = e2 - deltaElo;
