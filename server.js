@@ -10,9 +10,10 @@ app.use(express.static('public'));
 
 
 const key = fs.readFileSync('pass.txt', 'utf-8').trim(); 
+const adminPass = fs.readFileSync('public/restricted/admin.txt', 'utf-8').trim();
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
-
+// sqlite3.connect('db/rankings.db');
 // sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER, division INTEGER)");
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Dhruv',1000,1)");
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,1)");
@@ -23,7 +24,7 @@ console.log('Initializing rankings database...');
 
 
 // sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
-//sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
+// sqlite3.close();
 console.log('...done.');
 
 
@@ -72,16 +73,17 @@ io.sockets.on('connection',function(socket){
 		//check password
 		if (password == key){	
 			//check whether the names are in the db
-			var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			var nameCheck1 = sqlite3.run("SELECT 1 FROM players WHERE name=$name",{
 				$name: name1
-			});
-			var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			})[0];
+			var nameCheck2 = sqlite3.run("SELECT 1 FROM players WHERE name=$name",{
 				$name: name2
-			});
+			})[0];
 
-			var divWinner = getDiv(name1);
-			var divLoser = getDiv(name2);
-			if (nameCheck1 != null && nameCheck2 != null){
+			if (nameCheck1 != undefined && nameCheck2 != undefined){
+				var divWinner = getDiv(name1);
+				var divLoser = getDiv(name2);
+	
 				if (divWinner == divLoser){
 					var gameCheck = checkForGame(name1, name2, score1, score2, longword);
 					if (gameCheck == false){
@@ -91,8 +93,26 @@ io.sockets.on('connection',function(socket){
 						io.emit('sendDiv3', getTable(3));
 						addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
 					}
+					else {
+						// game has already been submitted
+						var msg = "That game has already been submitted!";
+						socket.emit('badSubmission', msg);
+					}
+				}
+				else {
+					// the players aren't in the same division
+					var msg = "Those players aren't in the same division!";
+					socket.emit('badSubmission', msg);
 				}
 			}
+			else {
+				// One of the players doesn't exist
+				var msg = "One or more of those players does not exist!";
+				socket.emit('badSubmission', msg);
+			}
+		}
+		else {
+			socket.emit('badSubmission', "Wrong password!");
 		}
 		sqlite3.close();
 	});
@@ -104,31 +124,84 @@ io.sockets.on('connection',function(socket){
 	// when the admin loads the page and tries to get the list of games played
 	socket.on('checkGames', function(){
 		sqlite3.connect('db/rankings.db');
-		// TODO:  set msg equal to the list of games
 		var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
 		io.emit('sendGames', msg);
+		console.log("Sent list of games!");
 		sqlite3.close();
 	});
+
+	socket.on('authRequest', msg => {
+		if (msg.trim() != adminPass){
+			socket.emit('badSubmission', "Incorrect Password!");
+			socket.emit('redirect', '/');
+		}
+		else{
+			sqlite3.connect('db/rankings.db');
+			var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
+			socket.emit('sendGames', msg);
+			sqlite3.close();
+		}
+
+	});
+
 	// when the admin tries to edit a game
 	socket.on('editGame', function(msg){
 		sqlite3.connect('db/rankings.db');
-		
+		var number = msg[1].trim(0);
+		var row  = sqlite3.run("SELECT * FROM games LIMIT 1 OFFSET $num",{
+			$num: number
+		});	
+		row = row[0];
+		var time =  row.time;
+		var cwinner = row.winner;
+		var closer = row.loser;
+		var cwscore = row.winner_score;
+		var clscore = row.loser_score;
+		var clword = row.longword;
+
 		// Can either DELETE or UPDATE the game
 		// delete the row from the table
 		if (msg[0].trim() == "DELETE"){
-			var number = msg[1].trim(0);
-			sqlite3.run("DELETE FROM games ORDER BY time LIMIT #num - 1,1",{
-				$num: number
+			sqlite3.run("DELETE FROM games WHERE time = $time",{
+				$time: time
 			});
 		}
 
-		if (msg[1].trim() == "UPDATE"){
-			var number = msg[1].trim(0);
-			var row = sqlite3.run("SELECT * FROM games ORDER BY time DESC LIMIT $offset + 1, 1",{
-				$offset: number
-			});
+		if (msg[0].trim() == "UPDATE"){
+			if (msg[2].trim() != "skip"){
+				sqlite3.run("UPDATE games SET winner=$winner WHERE time=$time",{
+					$winner:msg[2].trim(),
+					$time:time
+				});
+			}
+			if (msg[3].trim() != "skip"){
+				sqlite3.run("UPDATE games SET loser=$loser WHERE time=$time",{
+					$loser:msg[3].trim(),
+					$time:time
+				});
+			}
+			if (msg[4].trim() != "skip"){
+				sqlite3.run("UPDATE games SET winner_score=$winner WHERE time=$time",{
+					$winner:msg[4].trim(),
+					$time:time
+				});
+			}
+			if (msg[5].trim() != "skip"){
+				sqlite3.run("UPDATE games SET loser_score=$loser WHERE time=$time",{
+					$loser:msg[5].trim(),
+					$time:time
+				});
+			}
+			if (msg[6].trim() != "skip"){
+				sqlite3.run("UPDATE games SET longword=$word WHERE time=$time",{
+					$word:msg[6].trim(),
+					$time:time
+				});
+			}
 		}
-
+		updateAllElos();
+		var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
+		socket.emit('sendGames',msg);
 		sqlite3.close();
 	});
 
@@ -233,4 +306,31 @@ function getDiv(name){
 	});
 	var div = player[0].division;
 	return div;
+}
+// this function gets called after you edit/delete a row in the games db
+// essentially recalcs all elos
+function updateAllElos(){
+	// reset all elos to 1k
+	var temp = sqlite3.run("UPDATE players SET elo=1000");
+	console.log(temp);
+	//iterate through all pairs of wins/losses in the new games database
+	var allGames = sqlite3.run("SELECT * FROM games ORDER BY time");
+	for (i = 0; i < allGames.length; i++){
+		var winner = allGames[i].winner;
+		var loser = allGames[i].loser;
+		var time = allGames[i].time;
+		// call updateElo() on the pair
+		updateElos(winner, loser);
+		// update the new elos stored in games
+		sqlite3.run("UPDATE games SET winner_new_elo=$wne WHERE time = $time",{
+			$wne:getPlayerElo(winner),
+			$time: time
+		});
+		sqlite3.run("UPDATE games SET loser_new_elo=$lne WHERE time = $time",{
+			$lne:getPlayerElo(loser),
+			$time: time
+		});
+	}
+
+
 }

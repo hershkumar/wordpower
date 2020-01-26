@@ -11,6 +11,9 @@ const zip = (a, b) => {
     });
 };
 
+
+
+
 function table(obj) {
     var s = "";
 
@@ -56,6 +59,11 @@ $(document).ready(function(){
     socket.on('sendDiv3', msg => {
         $("#div3").empty().append(table(msg));
     });
+
+    socket.on('badSubmission', msg => {
+        alert(msg);
+    });
+
 
     $("#submitform").submit(function(e){
         e.preventDefault();
