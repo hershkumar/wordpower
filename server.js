@@ -13,13 +13,13 @@ const key = fs.readFileSync('pass.txt', 'utf-8').trim();
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 
-// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',1000)");
+// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER, division INTEGER)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Dhruv',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Emmy',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Nate',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Shawn',1000,3)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Hersh',1000,3)");
 
 // make mock game database
 
@@ -136,15 +136,17 @@ function getPlayerElo(name){
 }
 
 function getTable(){
-	let sql = `SELECT * from players ORDER BY elo DESC`;
+	let sql = `SELECT * FROM players ORDER BY division,elo DESC`;
 	data = sqlite3.run(sql);
 	names = [];
 	elos = [];
+	divisions = [];
 	for (i = 0; i< data.length; i++){
 		names.push(data[i].name);
 		elos.push(data[i].elo);
+		divisions.push(data[i].division);
 	}
-  return {'Name': names, 'ELO': elos};
+  return {'Name': names, 'ELO': elos, 'Division': divisions};
 }
 
 function updateElos(name1, name2){
