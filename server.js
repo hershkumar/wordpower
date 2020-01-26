@@ -13,7 +13,7 @@ const key = fs.readFileSync('pass.txt', 'utf-8').trim();
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 
-//sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
+// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
 // sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
@@ -88,6 +88,42 @@ io.sockets.on('connection',function(socket){
 		}
 		sqlite3.close();
 	});
+
+
+
+	///////////// ADMIN PANEL ////////////////
+
+	// when the admin loads the page and tries to get the list of games played
+	socket.on('checkGames', function(){
+		sqlite3.connect('db/rankings.db');
+		// TODO:  set msg equal to the list of games
+		var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
+		io.emit('sendGames', msg);
+		sqlite3.close();
+	});
+	// when the admin tries to edit a game
+	socket.on('editGame', function(msg){
+		sqlite3.connect('db/rankings.db');
+		
+		// Can either DELETE or UPDATE the game
+		// delete the row from the table
+		if (msg[0].trim() == "DELETE"){
+			var number = msg[1].trim(0);
+			sqlite3.run("DELETE FROM games ORDER BY time LIMIT #num - 1,1",{
+				$num: number
+			});
+		}
+
+		if (msg[1].trim() == "UPDATE"){
+			var number = msg[1].trim(0);
+			var row = sqlite3.run("SELECT * FROM games ORDER BY time DESC LIMIT $offset + 1, 1",{
+				$offset: number
+			});
+		}
+
+		sqlite3.close();
+	});
+
 });
 
 
