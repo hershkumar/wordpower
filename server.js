@@ -92,28 +92,33 @@ io.sockets.on('connection',function(socket){
 			})[0];
 
 			if (nameCheck1 != undefined && nameCheck2 != undefined){
-				var divWinner = getDiv(name1);
-				var divLoser = getDiv(name2);
-	
-				if (divWinner == divLoser){
-					var gameCheck = checkForGame(name1, name2, score1, score2, longword);
-					if (gameCheck == false){
-						updateElos(name1,name2);
-						io.emit('sendDiv1', getTable(1));
-						io.emit('sendDiv2', getTable(2));
-						io.emit('sendDiv3', getTable(3));
-						addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+				if (name1 != name2){
+					var divWinner = getDiv(name1);
+					var divLoser = getDiv(name2);
+		
+					if (divWinner == divLoser){
+						var gameCheck = checkForGame(name1, name2, score1, score2, longword);
+						if (gameCheck == false){
+							updateElos(name1,name2);
+							io.emit('sendDiv1', getTable(1));
+							io.emit('sendDiv2', getTable(2));
+							io.emit('sendDiv3', getTable(3));
+							addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+						}
+						else {
+							// game has already been submitted
+							var msg = "That game has already been submitted!";
+							socket.emit('badSubmission', msg);
+						}
 					}
 					else {
-						// game has already been submitted
-						var msg = "That game has already been submitted!";
+						// the players aren't in the same division
+						var msg = "Those players aren't in the same division!";
 						socket.emit('badSubmission', msg);
 					}
 				}
-				else {
-					// the players aren't in the same division
-					var msg = "Those players aren't in the same division!";
-					socket.emit('badSubmission', msg);
+				else{
+					socket.emit('badSubmission', "Those two players are the same!");
 				}
 			}
 			else {
