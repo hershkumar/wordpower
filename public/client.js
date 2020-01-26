@@ -45,8 +45,16 @@ $(document).ready(function(){
         socket.emit('checkRankings');
     });
 
-    socket.on('sendDB', msg => {
-        $("#tablehere").empty().append(table(msg));
+    socket.on('sendDiv1', msg => {
+        $("#div1").empty().append(table(msg));
+    });
+    
+    socket.on('sendDiv2', msg => {
+        $("#div2").empty().append(table(msg));
+    });
+
+    socket.on('sendDiv3', msg => {
+        $("#div3").empty().append(table(msg));
     });
 
     $("#submitform").submit(function(e){

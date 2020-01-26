@@ -13,17 +13,16 @@ const key = fs.readFileSync('pass.txt', 'utf-8').trim();
 // initialize sqlite3 database
 console.log('Initializing rankings database...');
 
-//sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Dhruv',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Patrick',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Emmy',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Nate',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Shawn',1000)");
-// sqlite3.run("INSERT INTO players (name, elo) VALUES('Hersh',1000)");
+// sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER, division INTEGER)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Dhruv',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Emmy',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Nate',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Shawn',1000,3)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Hersh',1000,3)");
 
-// make mock game database
 
-//sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
+// sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
 //sqlite3.run("INSERT INTO games (winner, loser, winner_score, loser_score, longword, winner_new_elo, loser_new_elo) VALUES('Dhruv','Nate', 10000, 10000,'yeet', 10030, 99970)");
 console.log('...done.');
 
@@ -42,6 +41,10 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/admin.html', function(req, res){
+    res.sendFile(__dirname + '/restricted/admin.html');
+});
+
 http.listen(port,'0.0.0.0', function(){
     console.log('listening on *:', port);
 });
@@ -52,7 +55,9 @@ io.sockets.on('connection',function(socket){
 	socket.on('checkRankings', function(){
 		sqlite3.connect('db/rankings.db');
 		//send the user the data
-		io.emit('sendDB', getTable());
+		io.emit('sendDiv1', getTable(1));
+		io.emit('sendDiv2', getTable(2));
+		io.emit('sendDiv3', getTable(3));
 		sqlite3.close();
 	});	
 
@@ -73,17 +78,60 @@ io.sockets.on('connection',function(socket){
 			var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
 				$name: name2
 			});
+
+			var divWinner = getDiv(name1);
+			var divLoser = getDiv(name2);
 			if (nameCheck1 != null && nameCheck2 != null){
-				var gameCheck = checkForGame(name1, name2, score1, score2, longword);
-				if (gameCheck == false){
-					updateElos(name1,name2);
-					io.emit('sendDB', getTable());
-					addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+				if (divWinner == divLoser){
+					var gameCheck = checkForGame(name1, name2, score1, score2, longword);
+					if (gameCheck == false){
+						updateElos(name1,name2);
+						io.emit('sendDiv1', getTable(1));
+						io.emit('sendDiv2', getTable(2));
+						io.emit('sendDiv3', getTable(3));
+						addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+					}
 				}
 			}
 		}
 		sqlite3.close();
 	});
+
+
+
+	///////////// ADMIN PANEL ////////////////
+
+	// when the admin loads the page and tries to get the list of games played
+	socket.on('checkGames', function(){
+		sqlite3.connect('db/rankings.db');
+		// TODO:  set msg equal to the list of games
+		var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
+		io.emit('sendGames', msg);
+		sqlite3.close();
+	});
+	// when the admin tries to edit a game
+	socket.on('editGame', function(msg){
+		sqlite3.connect('db/rankings.db');
+		
+		// Can either DELETE or UPDATE the game
+		// delete the row from the table
+		if (msg[0].trim() == "DELETE"){
+			var number = msg[1].trim(0);
+			sqlite3.run("DELETE FROM games ORDER BY time LIMIT #num - 1,1",{
+				$num: number
+			});
+		}
+
+		if (msg[1].trim() == "UPDATE"){
+			var number = msg[1].trim(0);
+			var row = sqlite3.run("SELECT * FROM games ORDER BY time DESC LIMIT $offset + 1, 1",{
+				$offset: number
+			});
+		}
+
+		sqlite3.close();
+	});
+
 });
 
 
@@ -95,16 +143,18 @@ function getPlayerElo(name){
 	return elo
 }
 
-function getTable(){
-	let sql = `SELECT * from players ORDER BY elo DESC`;
+function getTable(div){
+	let sql = `SELECT * FROM players ORDER BY division,elo DESC`;
 	data = sqlite3.run(sql);
 	names = [];
 	elos = [];
 	for (i = 0; i< data.length; i++){
-		names.push(data[i].name);
-		elos.push(data[i].elo);
+		if (data[i].division == div){
+			names.push(data[i].name);
+			elos.push(data[i].elo);			
+		}
 	}
-  return {'Name': names, 'ELO': elos};
+	return {'Name': names, 'ELO': elos};
 }
 
 function updateElos(name1, name2){
@@ -176,4 +226,11 @@ function checkForGame(winner, loser, score1, score2, longword){
 		return true;		
 	}
 }
-
+// gets the division that the player is in
+function getDiv(name){
+	var player = sqlite3.run("SELECT * FROM players WHERE name = $playerName",{
+		$playerName: name
+	});
+	var div = player[0].division;
+	return div;
+}
