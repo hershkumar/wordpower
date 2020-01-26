@@ -15,13 +15,24 @@ const adminPass = fs.readFileSync('public/restricted/admin.txt', 'utf-8').trim()
 console.log('Initializing rankings database...');
 // sqlite3.connect('db/rankings.db');
 // sqlite3.run("CREATE TABLE players(name TEXT, elo INTEGER, division INTEGER)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Lucinda',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Nate',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Shawn',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Zoe',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Katherine',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Emmy',1000,1)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Simon',1000,1)");
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Dhruv',1000,1)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,1)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Emmy',1000,2)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Nate',1000,2)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Shawn',1000,3)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Hersh',1000,3)");
 
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Aarthi',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Rachel',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Victoria',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Eric',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Daniel',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Shreeya',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Seoyoung',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Hersh',1000,2)");
+// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,2)");
 
 // sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
 // sqlite3.close();
