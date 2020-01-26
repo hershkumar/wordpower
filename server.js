@@ -72,16 +72,17 @@ io.sockets.on('connection',function(socket){
 		//check password
 		if (password == key){	
 			//check whether the names are in the db
-			var nameCheck1 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			var nameCheck1 = sqlite3.run("SELECT 1 FROM players WHERE name=$name",{
 				$name: name1
-			});
-			var nameCheck2 = sqlite3.run("SELECT 1 FROM rankings WHERE name=$name",{
+			})[0];
+			var nameCheck2 = sqlite3.run("SELECT 1 FROM players WHERE name=$name",{
 				$name: name2
-			});
+			})[0];
 
-			var divWinner = getDiv(name1);
-			var divLoser = getDiv(name2);
-			if (nameCheck1 != null && nameCheck2 != null){
+			if (nameCheck1 != undefined && nameCheck2 != undefined){
+				var divWinner = getDiv(name1);
+				var divLoser = getDiv(name2);
+	
 				if (divWinner == divLoser){
 					var gameCheck = checkForGame(name1, name2, score1, score2, longword);
 					if (gameCheck == false){
@@ -91,7 +92,22 @@ io.sockets.on('connection',function(socket){
 						io.emit('sendDiv3', getTable(3));
 						addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
 					}
+					else {
+						// game has already been submitted
+						var msg = "That game has already been submitted!";
+						socket.emit('badSubmission', msg);
+					}
 				}
+				else {
+					// the players aren't in the same division
+					var msg = "Those players aren't in the same division!";
+					socket.emit('badSubmission', msg);
+				}
+			}
+			else {
+				// One of the players doesn't exist
+				var msg = "One or more of those players does not exist!";
+				socket.emit('badSubmission', msg);
 			}
 		}
 		sqlite3.close();
@@ -104,9 +120,9 @@ io.sockets.on('connection',function(socket){
 	// when the admin loads the page and tries to get the list of games played
 	socket.on('checkGames', function(){
 		sqlite3.connect('db/rankings.db');
-		// TODO:  set msg equal to the list of games
 		var msg = sqlite3.run("SELECT * FROM games ORDER BY time");
 		io.emit('sendGames', msg);
+		console.log("Sent list of games!");
 		sqlite3.close();
 	});
 	// when the admin tries to edit a game
