@@ -25,7 +25,7 @@ $(document).ready(function(){
     // when the radio buttons change
     $('input:radio[name="editType"]').change(function(){
     	if ($(this).val() == "Delete"){
-    		var rowNum = prompt("What row would you like to delete? (0 indexed)", "");
+    		var rowNum = prompt("What row would you like to delete?", "");
     		if (rowNum != null && rowNum != undefined && ~isNaN(rowNum)){
     			var msg = ["DELETE",rowNum];
     			socket.emit('editGame',msg);
@@ -33,7 +33,7 @@ $(document).ready(function(){
     	}
 
     	else {
-    		var rowNum = prompt("What row would you like to edit? (0 indexed)", "");
+    		var rowNum = prompt("What row would you like to edit?", "");
     		if (rowNum != null && rowNum != undefined && ~isNaN(rowNum)){
 				var new_winner = prompt("New winner?", "skip");
 				var new_loser = prompt("New loser?", "skip");

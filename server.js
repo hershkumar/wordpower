@@ -165,7 +165,7 @@ io.sockets.on('connection',function(socket){
 		sqlite3.connect('db/rankings.db');
 		var number = msg[1].trim(0);
 		var row  = sqlite3.run("SELECT * FROM games LIMIT 1 OFFSET $num",{
-			$num: number
+			$num: number - 1
 		});	
 		row = row[0];
 		var time =  row.time;
