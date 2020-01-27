@@ -12,7 +12,7 @@
 		    counter-reset: rowNumber;
 		}
 
-		table tr {
+		table tr:not(:first-child) {
 		    counter-increment: rowNumber;
 		}
 
@@ -25,6 +25,7 @@
 </head>
 
 <body>
+	<a href="/">Back to Main Site</a>
 	<form action='' id="editForm">
 		<input type="radio" name="editType" id="EditButton" value="Edit"> Edit<br>
 		<input type="radio" name="editType" id="DeleteButton" value="Delete"> Delete <br>
