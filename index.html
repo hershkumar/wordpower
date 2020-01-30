@@ -21,13 +21,14 @@
 
     <!-- Custom styles/scripts -->
     <link rel="stylesheet" href="css/style.css">
+    <script src="utils.js"></script>
     <script src="client.js"></script>
 </head>
 
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <a class="navbar-brand" href="#">Word League</a>
+    <a class="navbar-brand" href="/">Word League</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -35,16 +36,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto" id="nav-list">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link">Submit</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Leaderboard</a>
+                <a class="nav-link">Leaderboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Statistics</a>
+                <a class="nav-link" href="/statistics">Statistics</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="restricted/admin.html">Admin</a>
@@ -110,7 +111,7 @@
                 <p>
                     These rankings are the overall rating table.
                     For more complicated statistics, as well as the ELO calculation,
-                    see <a href="#">statistics</a>.
+                    see <a href="/statistics">statistics</a>.
                 </p>
             </div>
             <div class="col-2"></div>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <title>WHL Power Rankings</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <meta name="description" content="Rankings for the Word Hunt League">
+    <meta name="author" content="Hersh Kumar and Simon Chervenak">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-grid.css">
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="lib/fullpage/fullpage.css">
+    <script src="lib/fullpage/fullpage.js"></script>
+
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src="https://unpkg.com/sticky-table-headers"></script>
+
+
+    <!-- Custom styles/scripts -->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="utils.js"></script>
+    <script src="statistics.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a class="navbar-brand" href="/">Word League</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto" id="nav-list">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="timechart-select">Time Chart of </label>
+                </div>
+                <select class="custom-select" id="timechart-select">
+                    <option selected value="elo">ELO</option>
+                    <option disabled value="score">More to come...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="time-chart"></div>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="barchart-select">Bar Chart of </label>
+                </div>
+                <select class="custom-select" id="barchart-select">
+                    <option selected value="wins">Wins</option>
+                    <option value="losses">Losses</option>
+                    <option value="perc">Winning Percentage</option>
+                    <option value="elo">ELO</option>
+                    <option value="total">Total Games</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="bar-chart"></div>
+    </div>
+
+    <div>
+        <div class="row">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="barchart-select">Wins-and-losses Table </label>
+                </div>
+            </div>
+        </div>
+
+        <table id="wins-table" class='table table-sm table-responsive table-striped header-fixed'></table>
+    </div>
+</main>
+</body>
+</html>

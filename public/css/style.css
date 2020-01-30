@@ -22,3 +22,26 @@ table tr td:first-child::before
 .navbar {
     margin-bottom: 0px;
 }
+
+main {
+     margin: 0 50px 0;
+}
+
+#wins-table tr td:first-child::before {
+    content: none;
+    min-width: 0em;
+    margin-right: 0em;
+}
+
+
+.header-fixed thead th {
+    text-align: left;
+    top:0;
+    position: sticky;
+    background-color: white;
+}
+
+.header-fixed {
+    overflow-y: auto;
+    table-layout: fixed;
+}
