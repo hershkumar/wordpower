@@ -40,7 +40,6 @@ console.log('Initializing rankings database...');
 // sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
 // sqlite3.close();
 console.log('...done.');
-console.log(sqlite3.run(`SELECT * FROM games`));
 
 
 app.all('*', function(req, res, next) {
@@ -270,11 +269,11 @@ function getGames(){
 function updateElos(name1, name2){
 	var e1 = getPlayerElo(name1);
 	var e2 = getPlayerElo(name2);
-
 	var deltaElo = 0;
 	// do cost calculation here
-	deltaElo = parseInt(40/(1+ Math.E^(-.0025*(e2-e1)))+10);
+	deltaElo = parseInt(40/(1+ Math.E**(-.0025*(e2-e1)))+10);
 	//update value for both players
+	console.log(deltaElo);
 	var p1NewElo = e1 + deltaElo;
 	var p2NewElo = e2 - deltaElo;
 	if (p1NewElo <= 0){
