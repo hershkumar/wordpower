@@ -181,6 +181,7 @@ function make_wins_table() {
     for ([i, n] of names.entries()) {
         s += `<th scope='col' id='wintable-0-${i + 1}'>${n}</th>`;
     }
+    s += `<th scope='col' id='wintable-0-total'>Total</th>`;
     s += "</tr>";
 
     s += "</thead><tbody>";
@@ -188,6 +189,7 @@ function make_wins_table() {
     for ([row, n] of names.entries()) {
         s += "<tr>";
         s += `<td scope='row' id='wintable-${row + 1}-0'>${n}</td>`;
+        var twins = 0, tlos = 0;
         for ([col, n2] of names.entries()) {
             var wins = 0, losses = 0;
             for (g of data_games.games) {
@@ -199,7 +201,10 @@ function make_wins_table() {
             } else {
                 s += `<td id='wintable-${row + 1}-${col + 1}'>${wins}-${losses}</td>`;
             }
+            twins += wins;
+            tlos += losses;
         }
+        s += `<td id="wintable-${row + 1}-total">${twins}-${tlos}</td>`
         s += "</tr>";
     }
 
