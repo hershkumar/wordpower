@@ -155,6 +155,10 @@ io.sockets.on('connection',function(socket){
 		sqlite3.close();
 	});
 
+	socket.on('getGames', () => {
+		io.emit('sendGames', getGames());
+	})
+
 	socket.on('authRequest', msg => {
 		if (msg.trim() != adminPass){
 			socket.emit('badSubmission', "Incorrect Password!");
