@@ -5,12 +5,12 @@ function table(obj) {
     var th = "<th scope=\"{0}\">{1}</th>";
     var td = "<td scope=\"row\">{0}</td>";
 
-    s += "<thead><tr>";
+    s += "<thead id='wins-thead'><tr>";
     s += th.format("col", "Rank");
     for (i in obj) { s += th.format("col", i); }
     s += "</tr></thead>";
 
-    s += "<tbody>";
+    s += "<tbody id='wins-tbody'>";
     for ([idx, n] of obj['Name'].entries()) {
         s += "<tr>";
         s += th.format("row", idx + 1);
@@ -97,4 +97,6 @@ $(document).ready(function(){
     $("#nav-list li:nth-child(1)").on('click', () => { fullpage_api.moveTo(1); });
     $("#nav-list li:nth-child(2)").on('click', () => { fullpage_api.moveTo(2); });
     $("#nav-list li:nth-child(3)").on('click', () => { fullpage_api.moveTo(3); });
+
+
 });
