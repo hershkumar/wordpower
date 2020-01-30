@@ -194,7 +194,11 @@ function make_wins_table() {
                 if (n === g.winner && n2 === g.loser) { wins++; }
                 else if (n === g.loser && n2 === g.winner) { losses++; }
             }
-            s += `<td id='wintable-${row + 1}-${col + 1}'>${wins}-${losses}</td>`;
+            if (row === col) {
+                s += `<td id='wintable-${row + 1}-${col + 1}'>---</td>`;
+            } else {
+                s += `<td id='wintable-${row + 1}-${col + 1}'>${wins}-${losses}</td>`;
+            }
         }
         s += "</tr>";
     }
