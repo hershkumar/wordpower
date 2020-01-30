@@ -126,6 +126,20 @@ function make_bar_chart() {
             }
             break;
         case "elo":
+            var players_to_elo = {};
+            for (g of data_games.games) {
+                for (i of names) {
+                    if (i == g.winner) {
+                        players_to_elo[i] = g.winner_new_elo;
+                    } else if (i == g.loser) {
+                        players_to_elo[i] = g.loser_new_elo;
+                    }
+                }
+
+                for (i of names) {
+                    series.push({"values": players_to_elo[i], "text": i});
+                }
+            }
             break;
         case "total":
             for (i of names) {
