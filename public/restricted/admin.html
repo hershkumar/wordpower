@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Admin Panel</title>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<script src="admin.js"></script>
+	<style type="text/css">
+		table {
+		    counter-reset: rowNumber;
+		}
+
+		table tr:not(:first-child) {
+		    counter-increment: rowNumber;
+		}
+
+		table tr td:first-child::before {
+		    content: counter(rowNumber);
+		    min-width: 1em;
+		    margin-right: 0.5em;
+		}
+	</style>
+</head>
+
+<body>
+	<a href="/">Back to Main Site</a>
+	<form action='' id="editForm">
+		<input type="radio" name="editType" id="EditButton" value="Edit"> Edit<br>
+		<input type="radio" name="editType" id="DeleteButton" value="Delete"> Delete <br>
+	</form>
+
+	<div id="tablehere"></div>
+
+</body>
+
+</html>

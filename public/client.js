@@ -1,3 +1,4 @@
+
 function table(obj) {
     var s = "";
 
@@ -32,9 +33,22 @@ $(document).ready(function(){
         socket.emit('checkRankings');
     });
 
-    socket.on('sendDB', msg => {
-        $("#tablehere").empty().append(table(msg));
+    socket.on('sendDiv1', msg => {
+        $("#div1").empty().append(table(msg));
     });
+    
+    socket.on('sendDiv2', msg => {
+        $("#div2").empty().append(table(msg));
+    });
+
+    socket.on('sendDiv3', msg => {
+        $("#div3").empty().append(table(msg));
+    });
+
+    socket.on('badSubmission', msg => {
+        alert(msg);
+    });
+
 
     $("#submitform").submit(function(e){
         e.preventDefault();
@@ -43,7 +57,8 @@ $(document).ready(function(){
         var score1 = $("#score1").val();
         var score2 = $("#score2").val();
         var longword = $("#word").val();
-        msg = [name1, name2, score1, score2, longword];
+        var password = $("#password").val();
+        msg = [name1, name2, score1, score2, longword, password];
         var emit = true;
         // check the message for dumb stuff
         for (i = 0; i< msg.length; i++){
@@ -58,6 +73,7 @@ $(document).ready(function(){
             $("#score1").val('');
             $("#score2").val('');
             $("#word").val('');
+            $("#password").val('');
             // actually submit to the server that we have a new game
 
             socket.emit('submitNewGame', msg);
