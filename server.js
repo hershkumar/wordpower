@@ -156,8 +156,10 @@ io.sockets.on('connection',function(socket){
 	});
 
 	socket.on('getGames', () => {
+        sqlite3.connect('db/rankings.db');
 		io.emit('sendGames', getGames());
-	})
+		sqlite3.close();
+	});
 
 	socket.on('authRequest', msg => {
 		if (msg.trim() != adminPass){
