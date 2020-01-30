@@ -127,6 +127,9 @@ function make_bar_chart() {
             break;
         case "elo":
             var players_to_elo = {};
+            for (i of names) {
+                players_to_elo[i] = 1000;
+            }
             for (g of data_games.games) {
                 for (i of names) {
                     if (i == g.winner) {
@@ -137,7 +140,7 @@ function make_bar_chart() {
                 }
 
                 for (i of names) {
-                    series.push({"values": players_to_elo[i], "text": i});
+                    series.push({"values": [players_to_elo[i]], "text": i});
                 }
             }
             break;
