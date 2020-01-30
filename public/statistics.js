@@ -138,10 +138,9 @@ function make_bar_chart() {
                         players_to_elo[i] = g.loser_new_elo;
                     }
                 }
-
-                for (i of names) {
-                    series.push({"values": [players_to_elo[i]], "text": i});
-                }
+            }
+            for (i of names) {
+                series.push({"values": [players_to_elo[i]], "text": i});
             }
             break;
         case "total":
