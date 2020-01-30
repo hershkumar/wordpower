@@ -184,7 +184,7 @@ function make_wins_table() {
 $(document).ready(function() {
     var socket = io.connect();
     socket.on('connect', function () {
-        socket.emit('getGames');
+        socket.emit('checkGames');
     });
 
     socket.on('sendGames', read_data);
