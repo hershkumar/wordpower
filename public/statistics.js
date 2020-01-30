@@ -86,11 +86,19 @@ function make_time_chart() {
                 transform: {
                     type: 'date',
                     all: '%m/%d/%y  %h:%i %A'
-                }
+                },
+                zooming: true
             },
             scaleY: {
                 'min-value': Math.min(...all) - 100,
                 'max-value': Math.max(...all) + 100,
+                zooming: true
+            },
+            zoom: { //controls styling and some functionality of zooming
+                backgroundColor: "#1e7bd3",
+                borderColor: "#181818",
+                borderStyle : 'dashed',
+                borderWidth: 1
             },
             series: series
         }
