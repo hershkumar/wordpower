@@ -56,7 +56,7 @@ function read_data(data) {
     games['score'] = obj_from_names(data.players);
 
     for (game of data.games) {
-        var t = new Date(game.time).getTime();
+        var t = new Date(game.time.replace(" ", "T")).getTime();
         for (p of data.players) {
             if (p.name === game.winner) {
                 games['elo'][p.name].push([t, game.winner_new_elo]);
