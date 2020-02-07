@@ -34,14 +34,23 @@ $(document).ready(function(){
     });
 
     socket.on('sendDiv1', msg => {
+        for (var i = 0 ; i < msg['ELO'].length; i++){
+            msg['ELO'][i] = parseInt(msg['ELO'][i])
+        }
         $("#div1").empty().append(table(msg));
     });
     
     socket.on('sendDiv2', msg => {
+        for (var i = 0 ; i < msg['ELO'].length; i++){
+            msg['ELO'][i] = parseInt(msg['ELO'][i])
+        }
         $("#div2").empty().append(table(msg));
     });
 
     socket.on('sendDiv3', msg => {
+        for (var i = 0 ; i < msg['ELO'].length; i++){
+            msg['ELO'][i] = parseInt(msg['ELO'][i])
+        }
         $("#div3").empty().append(table(msg));
     });
 

@@ -107,7 +107,7 @@ io.sockets.on('connection',function(socket){
 					if (divWinner == divLoser){
 						var gameCheck = checkForGame(name1, name2, score1, score2, longword);
 						if (gameCheck == false){
-							updateElos(name1,name2);
+							updateElos(name1,name2,score1,score2,longword);
 							io.emit('sendDiv1', getTable(1));
 							io.emit('sendDiv2', getTable(2));
 							io.emit('sendDiv3', getTable(3));
@@ -266,14 +266,20 @@ function getGames(){
             'players': sqlite3.run(`SELECT * FROM players`)};
 }
 
-function updateElos(name1, name2){
+function updateElos(name1, name2,winner_score,loser_score,longword){
 	var e1 = getPlayerElo(name1);
 	var e2 = getPlayerElo(name2);
 	var deltaElo = 0;
 	// do cost calculation here
-	deltaElo = parseInt(40/(1+ Math.E**(-.0025*(e2-e1)))+10);
-	//update value for both players
-	console.log(deltaElo);
+	
+	// old elo calculation
+	//deltaElo = parseInt(40/(1+ Math.E**(-.0025*(e2-e1)))+10);
+	var l = longword.length;
+	var k = (winner_score - loser_score)/loser_score;
+	var x = e2 - e1;
+	deltaElo = 2.2 ** (l-5)*(10 + 40/(1 + Math.E ** (-.0025 * x)))*(.75 + Math.log(1.8 + (k-.376)/.41))
+	//update value for both players	
+	
 	var p1NewElo = e1 + deltaElo;
 	var p2NewElo = e2 - deltaElo;
 	if (p1NewElo <= 0){
@@ -354,8 +360,11 @@ function updateAllElos(){
 		var winner = allGames[i].winner;
 		var loser = allGames[i].loser;
 		var time = allGames[i].time;
+		var winner_score = allGames[i].winner_score;
+		var loser_score = allGames[i].loser_score;
+		var word = allGames[i].longword;
 		// call updateElo() on the pair
-		updateElos(winner, loser);
+		updateElos(winner, loser,winner_score,loser_score,word);
 		// update the new elos stored in games
 		sqlite3.run("UPDATE games SET winner_new_elo=$wne WHERE time = $time",{
 			$wne:getPlayerElo(winner),
