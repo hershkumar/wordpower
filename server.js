@@ -321,7 +321,7 @@ function getPlayerWinPercentage(name){
 //returns true if the game already exists
 //returns false if the game doesn't exist
 function checkForGame(winner, loser, score1, score2, longword){
-	var searched = sqlite3.run("SELECT * FROM games WHERE winner=$p1 AND loser=$p2 AND winner_score=$s1 AND loser_score=$s2 AND longword=$word",{
+	var searched = sqlite3.run("SELECT * FROM games WHERE winner=$p1 AND loser=$p2 AND winner_score=$s1 AND loser_score=$s2 AND longword=$word COLLATE NOCASE",{
 		$p1: winner,
 		$p2: loser,
 		$s1: score1,
@@ -348,7 +348,6 @@ function getDiv(name){
 function updateAllElos(){
 	// reset all elos to 1k
 	var temp = sqlite3.run("UPDATE players SET elo=1000");
-	console.log(temp);
 	//iterate through all pairs of wins/losses in the new games database
 	var allGames = sqlite3.run("SELECT * FROM games ORDER BY time");
 	for (i = 0; i < allGames.length; i++){
