@@ -107,11 +107,13 @@ io.sockets.on('connection',function(socket){
 					if (divWinner == divLoser){
 						var gameCheck = checkForGame(name1, name2, score1, score2, longword);
 						if (gameCheck == false){
-							updateElos(name1,name2,score1,score2,longword);
-							io.emit('sendDiv1', getTable(1));
-							io.emit('sendDiv2', getTable(2));
-							io.emit('sendDiv3', getTable(3));
-							addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+							if (score1 > score2){
+								updateElos(name1,name2,score1,score2,longword);
+								io.emit('sendDiv1', getTable(1));
+								io.emit('sendDiv2', getTable(2));
+								io.emit('sendDiv3', getTable(3));
+								addGameToDb(name1, name2, score1, score2, longword, getPlayerElo(name1), getPlayerElo(name2));
+							}
 						}
 						else {
 							// game has already been submitted
@@ -277,7 +279,7 @@ function updateElos(name1, name2,winner_score,loser_score,longword){
 	var l = longword.length;
 	var k = (winner_score - loser_score)/loser_score;
 	var x = e2 - e1;
-	deltaElo = 2.2 ** (l-5)*(10 + 40/(1 + Math.E ** (-.0025 * x)))*(.75 + Math.log(1.8 + (k-.376)/.41))
+	deltaElo = (2 ** (l-5))+(10 + 40/(1 + Math.E ** (-.0025 * (x-100) )))*(Math.log2(2 + (k - .315)/.351))
 	//update value for both players	
 	
 	var p1NewElo = e1 + deltaElo;
