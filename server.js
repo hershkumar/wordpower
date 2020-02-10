@@ -32,7 +32,6 @@ console.log('Initializing rankings database...');
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Patrick',1000,2)");
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Peter',1000,2)");
 // sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Tekla',1000,3)");
-// sqlite3.run("INSERT INTO players (name, elo, division) VALUES('Bryan',1000,2)");
 
 // sqlite3.run("CREATE TABLE games(time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, winner TEXT, loser TEXT, winner_score INTEGER, loser_score INTEGER, longword TEXT, winner_new_elo INTEGER, loser_new_elo INTEGER)");
 // sqlite3.close();
